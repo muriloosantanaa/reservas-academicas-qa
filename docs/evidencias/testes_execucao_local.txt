@@ -1,0 +1,12 @@
+Execução dos testes no ambiente de desenvolvimento do assistente (NÃO é a saída do Maven/CI).
+Ambiente: JDK 21, PostgreSQL 16.15 instalado localmente, JUnit 5.9 + Mockito 2.23 (strict stubs emulado).
+Substitutos locais: o Spring Test / Testcontainers / WireMock reais não estavam disponíveis; foram usados
+um extension que sobe a aplicação real contra o PostgreSQL local e um WireMock mínimo sobre o servidor HTTP do JDK.
+
+Testes unitários (classes *Test, sem as 3 de contexto Spring/H2):  195 encontrados, 195 aprovados, 0 falhas
+Testes de integração (classes *IT, 8 classes):                      104 encontrados, 104 aprovados, 0 falhas
+
+Cobertura combinada (JaCoCo 0.8.11, unitários + integração, classes de src/main): ver cobertura_jacoco_unit_mais_integracao.txt
+  linhas 756/777 = 97,3%   |   ramos 200/220 = 90,9%
+
+IMPORTANTE: rode ./mvnw verify no seu ambiente (com Docker) e guarde a saída real em docs/evidencias/.

@@ -1,0 +1,4 @@
+Medição do custo de uma verificação BCrypt (custo 10) no ambiente de teste (1 vCPU):
+BCrypt.matches (custo 10): 69.4 ms por verificação
+Teto teórico de autenticações por núcleo: ~14 req/s  (1000 ms / 69,4 ms)
+Vazão observada em GET /api/salas autenticado: 12,4 req/s  -> o gargalo é a autenticação, não o acesso a dados.

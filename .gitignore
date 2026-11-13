@@ -1,0 +1,30 @@
+# Maven / Java
+target/
+*.class
+*.log
+hs_err_pid*
+
+# IDEs
+.idea/
+*.iml
+*.iws
+.classpath
+.project
+.settings/
+.springBeans
+.sts4-cache/
+.apt_generated/
+.factorypath
+.vscode/
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# Segredos e configuracoes locais
+.env
+.env.*
+!.env.example
+
+# Logs locais de validacao
+verify-completo.txt

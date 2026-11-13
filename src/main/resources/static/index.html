@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="pt-BR">
+ <head>
+  <meta charset="utf-8"/>
+  <meta content="width=device-width,initial-scale=1" name="viewport"/>
+  <title>
+   ReservaHub | Reservas Acad&ecirc;micas
+  </title>
+  <link href="/css/style.css" rel="stylesheet"/>
+ </head>
+ <body>
+  <header>
+   <div class="brand">
+    <span class="logo">
+     R
+    </span>
+    <div>
+     <b>
+      ReservaHub
+     </b>
+     <small>
+      Gest&atilde;o acad&ecirc;mica de espa&ccedil;os e recursos
+     </small>
+    </div>
+   </div>
+   <div class="user">
+    <span id="userLabel">
+     N&atilde;o autenticado
+    </span>
+    <button class="ghost hidden" id="logout">
+     Sair
+    </button>
+   </div>
+  </header>
+  <main>
+   <section class="login card" id="login">
+    <div>
+     <span class="eyebrow">
+      BEM-VINDO AO RESERVAHUB
+     </span>
+     <h1>
+      Organize seus espa&ccedil;os.
+      <br/>
+      <em>
+       Simplifique sua rotina.
+      </em>
+     </h1>
+     <p>
+      Consulte disponibilidade e gerencie reservas de salas, professores e equipamentos em um s&oacute; lugar.
+     </p>
+    </div>
+    <form id="loginForm">
+     <h2>
+      Acessar sistema
+     </h2>
+     <label>
+      Usu&aacute;rio
+      <input id="username" required="" value="admin"/>
+     </label>
+     <label>
+      Senha
+      <input id="password" required="" type="password" value="Admin123!"/>
+     </label>
+     <button class="primary">
+      Entrar
+     </button>
+     <small>
+      Teste: admin / Admin123!
+     </small>
+     <p class="error" id="loginError">
+     </p>
+    </form>
+   </section>
+   <section class="hidden" id="app">
+    <div class="welcome">
+     <div>
+      <span class="eyebrow">
+       PAINEL DE CONTROLE
+      </span>
+      <h1>
+       Vis&atilde;o geral
+      </h1>
+      <p>
+       Acompanhe a ocupa&ccedil;&atilde;o e as solicita&ccedil;&otilde;es acad&ecirc;micas.
+      </p>
+     </div>
+     <button class="primary" id="newBooking">
+      ＋ Nova reserva
+     </button>
+    </div>
+    <div class="stats">
+     <article>
+      <span>
+       Reservas cadastradas
+      </span>
+      <strong id="total">
+       0
+      </strong>
+      <small>
+       Todos os per&iacute;odos
+      </small>
+     </article>
+     <article>
+      <span>
+       Solicita&ccedil;&otilde;es pendentes
+      </span>
+      <strong id="pending">
+       0
+      </strong>
+      <small>
+       Aguardando aprova&ccedil;&atilde;o
+      </small>
+     </article>
+     <article>
+      <span>
+       Salas dispon&iacute;veis
+      </span>
+      <strong id="rooms">
+       0
+      </strong>
+      <small>
+       Ativas no cat&aacute;logo
+      </small>
+     </article>
+     <article>
+      <span>
+       Materiais cadastrados
+      </span>
+      <strong id="materials">
+       0
+      </strong>
+      <small>
+       Equipamentos
+      </small>
+     </article>
+    </div>
+    <div class="toolbar">
+     <div>
+      <h2>
+       Reservas recentes
+      </h2>
+      <p>
+       Visualize e acompanhe o andamento das solicita&ccedil;&otilde;es.
+      </p>
+     </div>
+     <button class="secondary" id="refresh">
+      Atualizar
+     </button>
+    </div>
+    <div class="table-wrap">
+     <table>
+      <thead>
+       <tr>
+        <th>
+         Reserva
+        </th>
+        <th>
+         Sala
+        </th>
+        <th>
+         Professor
+        </th>
+        <th>
+         Data e hor&aacute;rio
+        </th>
+        <th>
+         Status
+        </th>
+        <th>
+         A&ccedil;&otilde;es
+        </th>
+       </tr>
+      </thead>
+      <tbody id="bookings">
+       <tr>
+        <td colspan="6">
+         Entre no sistema para carregar os dados.
+        </td>
+       </tr>
+      </tbody>
+     </table>
+    </div>
+    <div class="catalogs">
+     <section class="card">
+      <div class="section-title">
+       <div>
+        <h2>
+         Salas
+        </h2>
+        <p>
+         Espa&ccedil;os dispon&iacute;veis para reserva.
+        </p>
+       </div>
+       <button class="secondary" id="addRoom">
+        ＋ Sala
+       </button>
+      </div>
+      <div class="mini-list" id="roomList">
+      </div>
+     </section>
+     <section class="card">
+      <div class="section-title">
+       <div>
+        <h2>
+         Professores
+        </h2>
+        <p>
+         Docentes cadastrados.
+        </p>
+       </div>
+       <button class="secondary" id="addProfessor">
+        ＋ Professor
+       </button>
+      </div>
+      <div class="mini-list" id="profList">
+      </div>
+     </section>
+     <section class="card">
+      <div class="section-title">
+       <div>
+        <h2>
+         Materiais
+        </h2>
+        <p>
+         Equipamentos e recursos.
+        </p>
+       </div>
+       <button class="secondary" id="addMaterial">
+        ＋ Material
+       </button>
+      </div>
+      <div class="mini-list" id="materialList">
+      </div>
+     </section>
+    </div>
+   </section>
+  </main>
+  <dialog id="bookingDialog">
+   <form id="bookingForm" method="dialog">
+    <div class="dialog-head">
+     <div>
+      <span class="eyebrow">
+       NOVA SOLICITA&Ccedil;&Atilde;O
+      </span>
+      <h2>
+       Reservar recurso
+      </h2>
+     </div>
+     <button class="close" data-close="" type="button">
+      &times;
+     </button>
+    </div>
+    <label>
+     Sala
+     <select id="roomSelect" required="">
+     </select>
+    </label>
+    <label>
+     Professor
+     <select id="profSelect" required="">
+     </select>
+    </label>
+    <label>
+     Material (opcional)
+     <select id="materialSelect">
+      <option value="">
+       Sem material
+      </option>
+     </select>
+    </label>
+    <div class="two">
+     <label>
+      In&iacute;cio
+      <input id="start" required="" type="datetime-local"/>
+     </label>
+     <label>
+      T&eacute;rmino
+      <input id="end" required="" type="datetime-local"/>
+     </label>
+    </div>
+    <label>
+     Finalidade
+     <input id="purpose" maxlength="180" placeholder="Ex.: Aula de laborat&oacute;rio" required=""/>
+    </label>
+    <p class="error" id="bookingError">
+    </p>
+    <button class="primary">
+     Enviar solicita&ccedil;&atilde;o
+    </button>
+   </form>
+  </dialog>
+  <dialog id="simpleDialog">
+   <form id="simpleForm" method="dialog">
+    <div class="dialog-head">
+     <h2 id="simpleTitle">
+      Cadastrar
+     </h2>
+     <button class="close" data-close="" type="button">
+      &times;
+     </button>
+    </div>
+    <div id="simpleFields">
+    </div>
+    <p class="error" id="simpleError">
+    </p>
+    <button class="primary">
+     Salvar
+    </button>
+   </form>
+  </dialog>
+  <script src="/js/app.js">
+  </script>
+ </body>
+</html>

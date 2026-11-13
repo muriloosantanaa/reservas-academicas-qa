@@ -1,0 +1,4 @@
+MESMA SALA    : ok= 1 conflito= 19 outros= []
+MESMO PROF    : ok= 1 conflito= 19 outros= []
+MESMO MATERIAL: ok= 1 conflito= 19 outros= []
+ADJACENTES    : ok= 10 conflito= 0 outros= []

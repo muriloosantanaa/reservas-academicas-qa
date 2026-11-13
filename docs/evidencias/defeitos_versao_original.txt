@@ -1,0 +1,13 @@
+ORIGINAL: professor cancela reserva alheia (esperado 403) -> 409
+ORIGINAL: professor aprova (esperado 403) -> 403
+ORIGINAL: professor lê histórico alheio (esperado 403) -> 409
+ORIGINAL: JSON malformado (esperado 400) -> 500
+ORIGINAL: content-type text/plain (esperado 415) -> 500
+ORIGINAL: rota inexistente (esperado 404) -> 500
+ORIGINAL: DELETE /api/reservas (esperado 405) -> 500
+ORIGINAL: id não numérico (esperado 400) -> 500
+ORIGINAL: POST com id de reserva ALHEIA: status -> 200
+ORIGINAL:   reserva alheia depois do ataque: finalidade/sala -> ('ataque', False, 'professor')
+ORIGINAL: alterar reserva CANCELADA (esperado 409) -> 200
+ORIGINAL: mover aprovada restrita: status resultante (esperado SOLICITADA) -> APROVADA
+ORIGINAL: relatório chaves -> ['cargaHorariaAlocada', 'porProfessor', 'porSala', 'reservasConcluidas', 'totalReservas']

@@ -1,0 +1,58 @@
+name: quality-checks
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+permissions:
+  contents: read
+  pull-requests: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Só existe se o secret estiver cadastrado; sem ele, a etapa do Sonar é ignorada
+      SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0   # o SonarCloud precisa do histórico para identificar código novo
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+          cache: maven
+
+      - name: Permissão de execução do Maven Wrapper
+        run: chmod +x mvnw
+
+      # clean verify = testes unitários (surefire) + integração com Testcontainers
+      # (failsafe, usa o Docker do runner) + relatório e gate de cobertura (JaCoCo)
+      - name: Testes, integração e cobertura
+        run: ./mvnw --batch-mode clean verify
+
+      - name: Publicar relatórios (JaCoCo e testes)
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: relatorios-qualidade
+          path: |
+            target/site/jacoco/
+            target/surefire-reports/
+            target/failsafe-reports/
+
+      - name: Análise SonarCloud
+        if: ${{ env.SONAR_TOKEN != '' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: ./mvnw --batch-mode org.sonarsource.scanner.maven:sonar-maven-plugin:sonar

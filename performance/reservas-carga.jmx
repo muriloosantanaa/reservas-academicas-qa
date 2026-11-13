@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jmeterTestPlan version="1.2" properties="5.0" jmeter="5.6.3">
+<hashTree>
+<TestPlan guiclass="TestPlanGui" testclass="TestPlan" testname="ReservaHub - carga e concorrencia" enabled="true">
+  <stringProp name="TestPlan.comments">Cenario 1: leitura autenticada. Cenario 2: N reservas simultaneas pelo MESMO recurso (a invariante e: exatamente 1 aceita; as demais 409). Propriedades: -Jhost -Jport -Jleitores -Jiteracoes -Jrampa -Jsimultaneas. Os grupos rodam em sequencia (setUp, 1, 2, tearDown).</stringProp>
+  <boolProp name="TestPlan.functional_mode">false</boolProp>
+  <boolProp name="TestPlan.tearDown_on_shutdown">true</boolProp>
+  <boolProp name="TestPlan.serialize_threadgroups">true</boolProp>
+  <elementProp name="TestPlan.user_defined_variables" elementType="Arguments" guiclass="ArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true">
+    <collectionProp name="Arguments.arguments"/>
+  </elementProp>
+</TestPlan>
+<hashTree>
+<SetupThreadGroup guiclass="SetupThreadGroupGui" testclass="SetupThreadGroup" testname="setUp - cria sala e professor de teste" enabled="true">
+  <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+  <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+    <boolProp name="LoopController.continue_forever">false</boolProp>
+    <stringProp name="LoopController.loops">1</stringProp>
+  </elementProp>
+  <stringProp name="ThreadGroup.num_threads">1</stringProp>
+  <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+  <boolProp name="ThreadGroup.scheduler">false</boolProp>
+  <stringProp name="ThreadGroup.duration"></stringProp>
+  <stringProp name="ThreadGroup.delay"></stringProp>
+  <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+</SetupThreadGroup>
+<hashTree>
+<HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Cabecalhos" enabled="true">
+  <collectionProp name="HeaderManager.headers">
+    <elementProp name="" elementType="Header"><stringProp name="Header.name">Content-Type</stringProp><stringProp name="Header.value">application/json</stringProp></elementProp>
+    <elementProp name="" elementType="Header"><stringProp name="Header.name">Authorization</stringProp><stringProp name="Header.value">Basic YWRtaW46QWRtaW4xMjMh</stringProp></elementProp>
+  </collectionProp>
+</HeaderManager><hashTree/>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST sala" enabled="true">
+  <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{"nome":"Carga-${__UUID}","localizacao":"Bloco C","capacidade":40}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+  <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
+  <stringProp name="HTTPSampler.port">${__P(port,8080)}</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/admin/salas</stringProp>
+  <stringProp name="HTTPSampler.method">POST</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+</HTTPSamplerProxy>
+<hashTree>
+<ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200" enabled="true">
+  <collectionProp name="Asserion.test_strings"><stringProp name="49586">200</stringProp></collectionProp>
+  <stringProp name="Assertion.custom_message"></stringProp>
+  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+  <boolProp name="Assertion.assume_success">false</boolProp>
+  <intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion><hashTree/>
+<JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extrai id em SALA_ID" enabled="true">
+  <stringProp name="JSONPostProcessor.referenceNames">SALA_ID</stringProp>
+  <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+  <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+  <stringProp name="JSONPostProcessor.defaultValues">NAO_ENCONTRADO</stringProp>
+</JSONPostProcessor><hashTree/>
+<JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Publica SALA_ID" enabled="true">
+  <stringProp name="scriptLanguage">groovy</stringProp>
+  <stringProp name="parameters"></stringProp>
+  <stringProp name="filename"></stringProp>
+  <stringProp name="cacheKey">true</stringProp>
+  <stringProp name="script">props.put('SALA_ID', vars.get('SALA_ID'))</stringProp>
+</JSR223PostProcessor><hashTree/>
+</hashTree>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST professor" enabled="true">
+  <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{"nome":"Prof Carga","email":"${__UUID}@faculdade.edu.br","competencia":"Java"}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+  <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
+  <stringProp name="HTTPSampler.port">${__P(port,8080)}</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/admin/professores</stringProp>
+  <stringProp name="HTTPSampler.method">POST</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+</HTTPSamplerProxy>
+<hashTree>
+<ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200" enabled="true">
+  <collectionProp name="Asserion.test_strings"><stringProp name="49586">200</stringProp></collectionProp>
+  <stringProp name="Assertion.custom_message"></stringProp>
+  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+  <boolProp name="Assertion.assume_success">false</boolProp>
+  <intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion><hashTree/>
+<JSONPostProcessor guiclass="JSONPostProcessorGui" testclass="JSONPostProcessor" testname="Extrai id em PROF_ID" enabled="true">
+  <stringProp name="JSONPostProcessor.referenceNames">PROF_ID</stringProp>
+  <stringProp name="JSONPostProcessor.jsonPathExprs">$.id</stringProp>
+  <stringProp name="JSONPostProcessor.match_numbers">1</stringProp>
+  <stringProp name="JSONPostProcessor.defaultValues">NAO_ENCONTRADO</stringProp>
+</JSONPostProcessor><hashTree/>
+<JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Publica PROF_ID" enabled="true">
+  <stringProp name="scriptLanguage">groovy</stringProp>
+  <stringProp name="parameters"></stringProp>
+  <stringProp name="filename"></stringProp>
+  <stringProp name="cacheKey">true</stringProp>
+  <stringProp name="script">props.put('PROF_ID', vars.get('PROF_ID'))</stringProp>
+</JSR223PostProcessor><hashTree/>
+</hashTree>
+</hashTree>
+<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Cenario 1 - leitura autenticada (GET /api/salas)" enabled="true">
+  <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+  <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+    <boolProp name="LoopController.continue_forever">false</boolProp>
+    <stringProp name="LoopController.loops">${__P(iteracoes,25)}</stringProp>
+  </elementProp>
+  <stringProp name="ThreadGroup.num_threads">${__P(leitores,20)}</stringProp>
+  <stringProp name="ThreadGroup.ramp_time">${__P(rampa,10)}</stringProp>
+  <boolProp name="ThreadGroup.scheduler">false</boolProp>
+  <stringProp name="ThreadGroup.duration"></stringProp>
+  <stringProp name="ThreadGroup.delay"></stringProp>
+  <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+</ThreadGroup>
+<hashTree>
+<HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Cabecalhos" enabled="true">
+  <collectionProp name="HeaderManager.headers">
+    <elementProp name="" elementType="Header"><stringProp name="Header.name">Content-Type</stringProp><stringProp name="Header.value">application/json</stringProp></elementProp>
+    <elementProp name="" elementType="Header"><stringProp name="Header.name">Authorization</stringProp><stringProp name="Header.value">Basic cHJvZmVzc29yOlByb2YxMjMh</stringProp></elementProp>
+  </collectionProp>
+</HeaderManager><hashTree/>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="GET /api/salas" enabled="true">
+  <boolProp name="HTTPSampler.postBodyRaw">false</boolProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"/></elementProp>
+  <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
+  <stringProp name="HTTPSampler.port">${__P(port,8080)}</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/salas</stringProp>
+  <stringProp name="HTTPSampler.method">GET</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+</HTTPSamplerProxy>
+<hashTree>
+<ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200" enabled="true">
+  <collectionProp name="Asserion.test_strings"><stringProp name="49586">200</stringProp></collectionProp>
+  <stringProp name="Assertion.custom_message"></stringProp>
+  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+  <boolProp name="Assertion.assume_success">false</boolProp>
+  <intProp name="Assertion.test_type">8</intProp>
+</ResponseAssertion><hashTree/>
+</hashTree>
+</hashTree>
+<ThreadGroup guiclass="ThreadGroupGui" testclass="ThreadGroup" testname="Cenario 2 - reservas simultaneas pelo mesmo recurso" enabled="true">
+  <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+  <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+    <boolProp name="LoopController.continue_forever">false</boolProp>
+    <stringProp name="LoopController.loops">1</stringProp>
+  </elementProp>
+  <stringProp name="ThreadGroup.num_threads">${__P(simultaneas,50)}</stringProp>
+  <stringProp name="ThreadGroup.ramp_time">0</stringProp>
+  <boolProp name="ThreadGroup.scheduler">false</boolProp>
+  <stringProp name="ThreadGroup.duration"></stringProp>
+  <stringProp name="ThreadGroup.delay"></stringProp>
+  <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+</ThreadGroup>
+<hashTree>
+<HeaderManager guiclass="HeaderPanel" testclass="HeaderManager" testname="Cabecalhos" enabled="true">
+  <collectionProp name="HeaderManager.headers">
+    <elementProp name="" elementType="Header"><stringProp name="Header.name">Content-Type</stringProp><stringProp name="Header.value">application/json</stringProp></elementProp>
+    <elementProp name="" elementType="Header"><stringProp name="Header.name">Authorization</stringProp><stringProp name="Header.value">Basic cHJvZmVzc29yOlByb2YxMjMh</stringProp></elementProp>
+  </collectionProp>
+</HeaderManager><hashTree/>
+<HTTPSamplerProxy guiclass="HttpTestSampleGui" testclass="HTTPSamplerProxy" testname="POST /api/reservas (mesma sala e horario)" enabled="true">
+  <boolProp name="HTTPSampler.postBodyRaw">true</boolProp>
+  <elementProp name="HTTPsampler.Arguments" elementType="Arguments" guiclass="HTTPArgumentsPanel" testclass="Arguments" testname="User Defined Variables" enabled="true"><collectionProp name="Arguments.arguments"><elementProp name="" elementType="HTTPArgument"><boolProp name="HTTPArgument.always_encode">false</boolProp><stringProp name="Argument.value">{"sala":{"id":${__P(SALA_ID)}},"professor":{"id":${__P(PROF_ID)}},"inicio":"${__timeShift(yyyy-MM-dd'T'08:00:00,,P400D,,)}","fim":"${__timeShift(yyyy-MM-dd'T'10:00:00,,P400D,,)}","finalidade":"Teste de carga"}</stringProp><stringProp name="Argument.metadata">=</stringProp></elementProp></collectionProp></elementProp>
+  <stringProp name="HTTPSampler.domain">${__P(host,localhost)}</stringProp>
+  <stringProp name="HTTPSampler.port">${__P(port,8080)}</stringProp>
+  <stringProp name="HTTPSampler.protocol">http</stringProp>
+  <stringProp name="HTTPSampler.path">/api/reservas</stringProp>
+  <stringProp name="HTTPSampler.method">POST</stringProp>
+  <boolProp name="HTTPSampler.follow_redirects">true</boolProp>
+  <boolProp name="HTTPSampler.use_keepalive">true</boolProp>
+  <boolProp name="HTTPSampler.DO_MULTIPART_POST">false</boolProp>
+</HTTPSamplerProxy>
+<hashTree>
+<SyncTimer guiclass="TestBeanGUI" testclass="SyncTimer" testname="Largada simultanea" enabled="true">
+  <stringProp name="groupSize">${__P(simultaneas,50)}</stringProp>
+  <stringProp name="timeoutInMs">60000</stringProp>
+</SyncTimer><hashTree/>
+<ResponseAssertion guiclass="AssertionGui" testclass="ResponseAssertion" testname="HTTP 200 ou 409 (nunca 5xx)" enabled="true">
+  <collectionProp name="Asserion.test_strings"><stringProp name="49586">200</stringProp><stringProp name="51517">409</stringProp></collectionProp>
+  <stringProp name="Assertion.custom_message"></stringProp>
+  <stringProp name="Assertion.test_field">Assertion.response_code</stringProp>
+  <boolProp name="Assertion.assume_success">false</boolProp>
+  <intProp name="Assertion.test_type">40</intProp>
+</ResponseAssertion><hashTree/>
+<JSR223PostProcessor guiclass="TestBeanGUI" testclass="JSR223PostProcessor" testname="Conta reservas aceitas" enabled="true">
+  <stringProp name="scriptLanguage">groovy</stringProp>
+  <stringProp name="parameters"></stringProp>
+  <stringProp name="filename"></stringProp>
+  <stringProp name="cacheKey">true</stringProp>
+  <stringProp name="script">// conta quantas respostas foram 200 (aceitas); acesso sincronizado entre as threads
+synchronized (props) {
+    int atual = Integer.parseInt(props.getProperty('RESERVAS_ACEITAS', '0'))
+    if (prev.getResponseCode() == '200') { atual++ }
+    props.put('RESERVAS_ACEITAS', String.valueOf(atual))
+}</stringProp>
+</JSR223PostProcessor><hashTree/>
+</hashTree>
+</hashTree>
+<PostThreadGroup guiclass="PostThreadGroupGui" testclass="PostThreadGroup" testname="tearDown - verifica a invariante de concorrencia" enabled="true">
+  <stringProp name="ThreadGroup.on_sample_error">continue</stringProp>
+  <elementProp name="ThreadGroup.main_controller" elementType="LoopController" guiclass="LoopControlPanel" testclass="LoopController" testname="Loop Controller" enabled="true">
+    <boolProp name="LoopController.continue_forever">false</boolProp>
+    <stringProp name="LoopController.loops">1</stringProp>
+  </elementProp>
+  <stringProp name="ThreadGroup.num_threads">1</stringProp>
+  <stringProp name="ThreadGroup.ramp_time">1</stringProp>
+  <boolProp name="ThreadGroup.scheduler">false</boolProp>
+  <stringProp name="ThreadGroup.duration"></stringProp>
+  <stringProp name="ThreadGroup.delay"></stringProp>
+  <boolProp name="ThreadGroup.same_user_on_next_iteration">true</boolProp>
+</PostThreadGroup>
+<hashTree>
+<JSR223Sampler guiclass="TestBeanGUI" testclass="JSR223Sampler" testname="Verifica exatamente 1 reserva aceita" enabled="true">
+  <stringProp name="scriptLanguage">groovy</stringProp>
+  <stringProp name="parameters"></stringProp>
+  <stringProp name="filename"></stringProp>
+  <stringProp name="cacheKey">true</stringProp>
+  <stringProp name="script">int aceitas = Integer.parseInt(props.getProperty('RESERVAS_ACEITAS', '0'))
+SampleResult.setSampleLabel('Invariante: exatamente 1 reserva aceita')
+SampleResult.setSuccessful(aceitas == 1)
+SampleResult.setResponseCode(aceitas == 1 ? '200' : '500')
+SampleResult.setResponseMessage('reservas aceitas = ' + aceitas)
+SampleResult.setResponseData('reservas aceitas = ' + aceitas, 'UTF-8')</stringProp>
+</JSR223Sampler><hashTree/>
+</hashTree>
+</hashTree>
+</hashTree>
+</jmeterTestPlan>
